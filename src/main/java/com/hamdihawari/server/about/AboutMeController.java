@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/*@RestController
+@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/about")*/
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/about")
-@CrossOrigin(origins = "http://localhost:3000")
 public class AboutMeController {
 
     private final AboutMeService aboutMeService;
