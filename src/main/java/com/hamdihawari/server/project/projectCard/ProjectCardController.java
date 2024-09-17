@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/project-card")
+@RequestMapping("/project_card")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProjectCardController {
 

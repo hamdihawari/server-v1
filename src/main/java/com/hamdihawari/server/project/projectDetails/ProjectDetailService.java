@@ -32,4 +32,3 @@ public class ProjectDetailService {
         projectDetailRepository.deleteById(id);
     }
 }
-

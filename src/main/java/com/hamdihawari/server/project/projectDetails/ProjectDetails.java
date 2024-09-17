@@ -4,7 +4,7 @@ import com.hamdihawari.server.project.projectCard.ProjectCard;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "project_details")  // Updated table name
+@Table(name = "project_details")
 public class ProjectDetails {
 
     @Id
@@ -73,4 +73,3 @@ public class ProjectDetails {
                 '}';
     }
 }
-
