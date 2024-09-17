@@ -1,5 +1,6 @@
 package com.hamdihawari.server.project.projectDetails;
 
+import com.hamdihawari.server.project.projectCard.ProjectCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/project-details")
+@RequestMapping("/project_details")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProjectDetailController {
 
@@ -32,16 +33,26 @@ public class ProjectDetailController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<ProjectDetails> createProjectDetail(@RequestBody ProjectDetails projectDetail) {
         return new ResponseEntity<>(projectDetailService.createOrUpdateProjectDetail(projectDetail), HttpStatus.CREATED);
+    }*/
+
+    @PostMapping
+    public ResponseEntity<ProjectDetails> createProjectDetail(@RequestBody ProjectDetails projectDetail) {
+        // Hardcode ProjectCard for testing
+        ProjectCard projectCard = new ProjectCard();
+        projectCard.setId(1L); // Assuming this ID exists in the database
+        projectDetail.setProjectCard(projectCard);
+        return new ResponseEntity<>(projectDetailService.createOrUpdateProjectDetail(projectDetail), HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDetails> updateProjectDetail(@PathVariable Long id, @RequestBody ProjectDetails projectDetail) {
         Optional<ProjectDetails> existingDetail = projectDetailService.getProjectDetailById(id);
         if (existingDetail.isPresent()) {
-            projectDetail.setId(id); // Ensure the setter exists
+            projectDetail.setId(id);
             return new ResponseEntity<>(projectDetailService.createOrUpdateProjectDetail(projectDetail), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
