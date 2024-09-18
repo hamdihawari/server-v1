@@ -27,17 +27,15 @@ public class ProjectCardController {
     @Autowired
     private ProjectCardRepository projectCardRepository;
 
-    @GetMapping
-    public List<ProjectCard> getProjects(@RequestParam("language_id") Long languageId) {
-        Language language = languageService.getLanguageById(languageId);  // Fetch the Language entity by ID
-        return projectCardRepository.findByLanguage(language);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<ProjectCard>> getAllProjectCards() {
-        List<ProjectCard> projectCards = projectCardService.getAllProjectCards();
-        return ResponseEntity.ok(projectCards);
-    }
+    /*@GetMapping
+    public List<ProjectCard> getProjects(@RequestParam(value = "language_id", required = false) Long languageId) {
+        if (languageId != null) {
+            Language language = languageService.getLanguageById(languageId);  // Fetch the Language entity by ID
+            return projectCardRepository.findByLanguage(language);
+        } else {
+            return projectCardService.getAllProjectCards();
+        }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectCard> getProjectCardById(@PathVariable Long id) {
@@ -45,6 +43,22 @@ public class ProjectCardController {
         return projectCard.map(card -> new ResponseEntity<>(card, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping
+    public ResponseEntity<List<ProjectCard>> getProjects(@RequestParam(value = "language_id", required = false) Long languageId) {
+        if (languageId != null) {
+            Language language = languageService.getLanguageById(languageId);
+            if (language == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // Return Bad Request if the language doesn't exist
+            }
+            List<ProjectCard> projectCards = projectCardRepository.findByLanguage(language);
+            return new ResponseEntity<>(projectCards, HttpStatus.OK);
+        } else {
+            List<ProjectCard> allProjectCards = projectCardService.getAllProjectCards();
+            return new ResponseEntity<>(allProjectCards, HttpStatus.OK);
+        }
+    }
+
 
     @PostMapping
     public ResponseEntity<ProjectCard> createProjectCard(@RequestBody ProjectCard projectCard) {
@@ -75,11 +89,12 @@ public class ProjectCardController {
 }
 
 
-/*
 
+/*
 package com.hamdihawari.server.project.projectCard;
 
 import com.hamdihawari.server.language.Language;
+import com.hamdihawari.server.language.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,40 +109,22 @@ import java.util.Optional;
 public class ProjectCardController {
 
     private final ProjectCardService projectCardService;
+    private final LanguageService languageService;
+
     @Autowired
-    public ProjectCardController(ProjectCardService projectCardService) {
+    public ProjectCardController(ProjectCardService projectCardService, LanguageService languageService) {
         this.projectCardService = projectCardService;
+        this.languageService = languageService;
     }
+
     @Autowired
     private ProjectCardRepository projectCardRepository;
 
-    */
-/*@GetMapping
-    public List<ProjectCard> getProjects(@RequestParam("language_id") Integer languageId) {
-        return projectCardRepository.findByLanguageId(languageId);
-    }*//*
-
-
     @GetMapping
-    public List<ProjectCard> getProjects(@RequestParam("language_id") Integer languageId) {
+    public List<ProjectCard> getProjects(@RequestParam("language_id") Long languageId) {
         Language language = languageService.getLanguageById(languageId);  // Fetch the Language entity by ID
         return projectCardRepository.findByLanguage(language);
     }
-
-  */
-/*  @GetMapping
-    public ResponseEntity<List<ProjectCard>> getAllProjectCards() {
-        return new ResponseEntity<>(projectCardService.getAllProjectCards(), HttpStatus.OK);
-    }*//*
-
-
-    */
-/*@GetMapping
-    public List<ProjectCard> getAllProjectCards() {
-        // Dummy data for testing
-        return List.of(new ProjectCard(1L, "path1", "title1", "icon1", "data1", "image1", "imageHover1", "subject1", "description1"));
-    }*//*
-
 
     @GetMapping("/all")
     public ResponseEntity<List<ProjectCard>> getAllProjectCards() {
@@ -135,38 +132,15 @@ public class ProjectCardController {
         return ResponseEntity.ok(projectCards);
     }
 
-
-   */
-/* @GetMapping
-    public ResponseEntity<List<ProjectCard>> getAllProjectCards() {
-        List<ProjectCard> projectCards = projectCardService.getAllProjectCards();
-        return ResponseEntity.ok(projectCards);
-    }*//*
-
-    */
-/*@GetMapping
-    public ResponseEntity<List<ProjectCard>> getAllProjectCards() {
-        List<ProjectCard> projectCards = projectCardService.getAllProjectCards();
-        return ResponseEntity.ok(projectCards);
-    }*//*
-
-
     @GetMapping("/{id}")
     public ResponseEntity<ProjectCard> getProjectCardById(@PathVariable Long id) {
         Optional<ProjectCard> projectCard = projectCardService.getProjectCardById(id);
         return projectCard.map(card -> new ResponseEntity<>(card, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-   */
-/* @GetMapping
-    public List<ProjectCard> getAllProjectCards() {
-        return projectCardService.getAllProjectCards();
-    }*//*
-
 
     @PostMapping
     public ResponseEntity<ProjectCard> createProjectCard(@RequestBody ProjectCard projectCard) {
-        System.out.println("Received ProjectCard: " + projectCard);
         return new ResponseEntity<>(projectCardService.createOrUpdateProjectCard(projectCard), HttpStatus.CREATED);
     }
 
