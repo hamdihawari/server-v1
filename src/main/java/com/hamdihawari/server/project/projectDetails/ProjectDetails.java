@@ -1,5 +1,7 @@
 package com.hamdihawari.server.project.projectDetails;
 
+import com.hamdihawari.server.language.Language;
+
 import com.hamdihawari.server.project.projectCard.ProjectCard;
 import jakarta.persistence.*;
 
@@ -21,14 +23,19 @@ public class ProjectDetails {
     @Column(nullable = false, length = 2000)
     private String cardDescription;
 
+    @ManyToOne
+    @JoinColumn(name = "language_id", nullable = false)
+    private Language language;
+
     public ProjectDetails() {
     }
 
-    public ProjectDetails(Long id, ProjectCard projectCard, String subjectDetails, String cardDescription) {
+    public ProjectDetails(Long id, ProjectCard projectCard, String subjectDetails, String cardDescription, Language language) {
         this.id = id;
         this.projectCard = projectCard;
         this.subjectDetails = subjectDetails;
         this.cardDescription = cardDescription;
+        this.language = language;
     }
 
     public Long getId() {
@@ -61,6 +68,14 @@ public class ProjectDetails {
 
     public void setCardDescription(String cardDescription) {
         this.cardDescription = cardDescription;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     @Override
