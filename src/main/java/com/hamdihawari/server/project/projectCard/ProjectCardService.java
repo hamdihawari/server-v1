@@ -9,13 +9,8 @@ import java.util.Optional;
 
 @Service
 public class ProjectCardService {
-
-    private final ProjectCardRepository projectCardRepository;
-
     @Autowired
-    public ProjectCardService(ProjectCardRepository projectCardRepository) {
-        this.projectCardRepository = projectCardRepository;
-    }
+    private ProjectCardRepository projectCardRepository;
 
     public List<ProjectCard> getAllProjectCards() {
         return projectCardRepository.findAll();

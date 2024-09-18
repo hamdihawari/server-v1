@@ -1,5 +1,6 @@
 package com.hamdihawari.server.project.imageGroup;
 
+import com.hamdihawari.server.language.Language;
 import com.hamdihawari.server.project.projectDetails.ProjectDetails;
 import jakarta.persistence.*;
 
@@ -21,13 +22,22 @@ public class ImageGroup {
     @Column
     private String imageSubject;
 
+    @ManyToOne
+    @JoinColumn(name = "language_id", nullable = false)
+    private Language language;
+
+    /*@ManyToOne
+    @JoinColumn(name = "language_id", nullable = false)
+    private Language language;*/
+
     public ImageGroup() {}
 
-    public ImageGroup(Long id, ProjectDetails projectDetail, String imgUrl, String imageSubject) {
+    public ImageGroup(Long id, ProjectDetails projectDetail, String imgUrl, String imageSubject, Language language) {
         this.id = id;
         this.projectDetail = projectDetail;
         this.imgUrl = imgUrl;
         this.imageSubject = imageSubject;
+        this.language = language;
     }
 
     public Long getId() {
@@ -60,6 +70,14 @@ public class ImageGroup {
 
     public void setImageSubject(String imageSubject) {
         this.imageSubject = imageSubject;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     @Override
