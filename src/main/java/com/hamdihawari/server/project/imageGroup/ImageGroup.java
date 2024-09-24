@@ -26,10 +26,6 @@ public class ImageGroup {
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
 
-    /*@ManyToOne
-    @JoinColumn(name = "language_id", nullable = false)
-    private Language language;*/
-
     public ImageGroup() {}
 
     public ImageGroup(Long id, ProjectDetails projectDetail, String imgUrl, String imageSubject, Language language) {

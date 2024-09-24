@@ -25,6 +25,13 @@ public class ImageGroupController {
         return new ResponseEntity<>(imageGroupService.getAllImageGroups(), HttpStatus.OK);
     }
 
+    @GetMapping
+    public List<ImageGroup> getImagesByProjectDetailsId(@RequestParam Long project_details_id) {
+        return imageGroupService.getImagesByProjectDetailsId(project_details_id);
+    }
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<ImageGroup> getImageGroupById(@PathVariable Long id) {
         Optional<ImageGroup> imageGroup = imageGroupService.getImageGroupById(id);
