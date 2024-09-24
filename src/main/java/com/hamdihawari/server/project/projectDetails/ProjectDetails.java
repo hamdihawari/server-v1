@@ -1,7 +1,6 @@
 package com.hamdihawari.server.project.projectDetails;
 
 import com.hamdihawari.server.language.Language;
-
 import com.hamdihawari.server.project.projectCard.ProjectCard;
 import jakarta.persistence.*;
 
@@ -17,7 +16,7 @@ public class ProjectDetails {
     @JoinColumn(name = "project_card_id", nullable = false)
     private ProjectCard projectCard;
 
-    @Column
+    @Column(nullable = true)
     private String subjectDetails;
 
     @Column(nullable = false, length = 2000)
@@ -27,6 +26,7 @@ public class ProjectDetails {
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
 
+    // Constructors
     public ProjectDetails() {
     }
 
@@ -38,6 +38,7 @@ public class ProjectDetails {
         this.language = language;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -85,6 +86,7 @@ public class ProjectDetails {
                 ", projectCard=" + projectCard +
                 ", subjectDetails='" + subjectDetails + '\'' +
                 ", cardDescription='" + cardDescription + '\'' +
+                ", language=" + language +
                 '}';
     }
 }
