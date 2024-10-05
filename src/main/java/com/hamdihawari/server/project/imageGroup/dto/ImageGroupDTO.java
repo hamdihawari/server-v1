@@ -13,6 +13,9 @@ public class ImageGroupDTO {
         this.projectDetailId = projectDetailId;
     }
 
+    public ImageGroupDTO(Long id) {
+    }
+
     public Long getId() {
         return id;
     }

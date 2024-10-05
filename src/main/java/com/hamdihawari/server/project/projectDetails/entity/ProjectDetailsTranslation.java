@@ -16,10 +16,10 @@ public class ProjectDetailsTranslation {
     @JoinColumn(name = "project_details_id", nullable = false)
     private ProjectDetails projectDetails;
 
-
     @ManyToOne
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
+
 
     @Column(columnDefinition = "TEXT")
     private String subjectDetails;
@@ -31,6 +31,7 @@ public class ProjectDetailsTranslation {
     }
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }

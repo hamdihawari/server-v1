@@ -1,5 +1,6 @@
 package com.hamdihawari.server.project.imageGroup.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hamdihawari.server.project.projectDetails.entity.ProjectDetails; // Ensure this is the correct import
 import jakarta.persistence.*;
 
@@ -14,9 +15,14 @@ public class ImageGroup {
     @Column(name = "project_detail_id", nullable = false)
     private Long projectDetailId;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "project_detail_id", referencedColumnName = "id", insertable = false, updatable = false)
     private ProjectDetails projectDetail; // Correct class name for the relationship mapping
+*/
+    @ManyToOne
+    @JoinColumn(name = "project_detail_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonBackReference // This prevents infinite recursion
+    private ProjectDetails projectDetail;
 
     public ImageGroup() {
     }

@@ -1,5 +1,6 @@
 package com.hamdihawari.server.project.projectDetails.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hamdihawari.server.project.imageGroup.entity.ImageGroup;
 import jakarta.persistence.*;
 
@@ -16,9 +17,11 @@ public class ProjectDetails {
     @Column(name = "project_card_id", nullable = false)
     private Long projectCardId;
 
+    /*@OneToMany(mappedBy = "projectDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageGroup> imageGroups;*/
     @OneToMany(mappedBy = "projectDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // This is the managed side of the relationship
     private List<ImageGroup> imageGroups;
-
     public ProjectDetails() {
     }
 

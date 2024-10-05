@@ -15,6 +15,11 @@ public class ProjectDetailsController {
     @Autowired
     private ProjectDetailsService projectDetailsService;
 
+    @Autowired
+    public ProjectDetailsController(ProjectDetailsService projectDetailsService) {
+        this.projectDetailsService = projectDetailsService;
+    }
+
     // Get project details by projectCardId
     @GetMapping("/{projectCardId}")
     public ResponseEntity<ProjectDetails> getProjectDetailsByProjectCardId(@PathVariable Long projectCardId) {
