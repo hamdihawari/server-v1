@@ -1,9 +1,15 @@
 package com.hamdihawari.server.project.imageGroup.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class ImageDTO {
 
     private Long id;
+
+    @NotNull
     private Long imageGroupId;
+
+    @NotNull
     private String imagePath;
 
     public ImageDTO() {

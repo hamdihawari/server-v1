@@ -10,8 +10,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "image_group_id")
-    private Long imageGroupId;
+    @ManyToOne // Assuming many images belong to one image group
+    @JoinColumn(name = "image_group_id") // Ensure the correct foreign key name
+    private ImageGroup imageGroup;
 
     @Column(name = "image_path")
     private String imagePath;
@@ -19,8 +20,9 @@ public class Image {
     public Image() {
     }
 
-    public Image(Long imageGroupId, String imagePath) {
-        this.imageGroupId = imageGroupId;
+    public Image(Long id, ImageGroup imageGroup, String imagePath) {
+        this.id = id;
+        this.imageGroup = imageGroup;
         this.imagePath = imagePath;
     }
 
@@ -32,12 +34,12 @@ public class Image {
         this.id = id;
     }
 
-    public Long getImageGroupId() {
-        return imageGroupId;
+    public ImageGroup getImageGroup() {
+        return imageGroup;
     }
 
-    public void setImageGroupId(Long imageGroupId) {
-        this.imageGroupId = imageGroupId;
+    public void setImageGroup(ImageGroup imageGroup) {
+        this.imageGroup = imageGroup;
     }
 
     public String getImagePath() {

@@ -19,6 +19,69 @@ public class ImageGroupController {
     @Autowired
     private ImageGroupService imageGroupService;
 
+    // Get all image groups
+    @GetMapping
+    public List<ImageGroupDTO> getAllImageGroups() {
+        List<ImageGroup> imageGroups = imageGroupService.getAllImageGroups();
+        return imageGroups.stream()
+                .map(imageGroup -> new ImageGroupDTO(imageGroup.getId(), imageGroup.getProjectDetailId()))
+                .collect(Collectors.toList());
+    }
+
+    // Create a new image group
+    @PostMapping
+    public ResponseEntity<ImageGroupDTO> createImageGroup(@RequestBody ImageGroupDTO imageGroupDTO) {
+        ImageGroup newImageGroup = new ImageGroup();
+        newImageGroup.setProjectDetailId(imageGroupDTO.getProjectDetailId());
+        ImageGroup savedImageGroup = imageGroupService.createImageGroup(newImageGroup);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ImageGroupDTO(savedImageGroup.getId(), savedImageGroup.getProjectDetailId()));
+    }
+
+    // Update an existing image group
+    @PutMapping("/{id}")
+    public ResponseEntity<ImageGroupDTO> updateImageGroup(@PathVariable Long id, @RequestBody ImageGroupDTO imageGroupDTO) {
+        try {
+            ImageGroup updatedImageGroup = imageGroupService.updateImageGroup(id, imageGroupDTO);
+            return ResponseEntity.ok(new ImageGroupDTO(updatedImageGroup.getId(), updatedImageGroup.getProjectDetailId()));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    // Delete an image group by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteImageGroup(@PathVariable Long id) {
+        if (imageGroupService.deleteImageGroup(id)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+}
+
+/*
+package com.hamdihawari.server.project.imageGroup.controller;
+
+import com.hamdihawari.server.project.imageGroup.dto.ImageGroupDTO;
+import com.hamdihawari.server.project.imageGroup.entity.ImageGroup;
+import com.hamdihawari.server.project.imageGroup.service.ImageGroupService;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/image_group")
+public class ImageGroupController {
+
+    @Autowired
+    private ImageGroupService imageGroupService;
+
     @GetMapping
     public List<ImageGroupDTO> getAllImageGroups() {
         return imageGroupService.getAllImageGroups().stream()
@@ -56,3 +119,4 @@ public class ImageGroupController {
         }
     }
 }
+*/

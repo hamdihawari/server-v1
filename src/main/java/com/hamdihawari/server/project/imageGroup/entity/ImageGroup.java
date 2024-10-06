@@ -15,10 +15,6 @@ public class ImageGroup {
     @Column(name = "project_detail_id", nullable = false)
     private Long projectDetailId;
 
-    /*@ManyToOne
-    @JoinColumn(name = "project_detail_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private ProjectDetails projectDetail; // Correct class name for the relationship mapping
-*/
     @ManyToOne
     @JoinColumn(name = "project_detail_id", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonBackReference // This prevents infinite recursion
