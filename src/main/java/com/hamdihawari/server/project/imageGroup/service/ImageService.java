@@ -14,32 +14,35 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
+    public Optional<Image> findById(Long id) {
+        return imageRepository.findById(id);
+    }
+
     public List<Image> getAllImages() {
         return imageRepository.findAll();
+    }
+
+    public List<Image> createImages(List<Image> images) {
+        return imageRepository.saveAll(images); // This will save all images in one go
     }
 
     public Image createImage(Image image) {
         return imageRepository.save(image);
     }
 
-    // Update an existing image
     public Optional<Image> updateImage(Long id, Image imageDetails) {
-        Optional<Image> imageOptional = imageRepository.findById(id);
-        if (imageOptional.isPresent()) {
-            Image image = imageOptional.get();
-            image.setImageGroupId(imageDetails.getImageGroupId());
+        return imageRepository.findById(id).map(image -> {
             image.setImagePath(imageDetails.getImagePath());
-            return Optional.of(imageRepository.save(image));
-        }
-        return Optional.empty(); // Image not found
+            image.setImageGroup(imageDetails.getImageGroup()); // Assuming you want to update the image group as well
+            return imageRepository.save(image);
+        });
     }
 
-    // Delete an image by ID
     public boolean deleteImage(Long id) {
         if (imageRepository.existsById(id)) {
             imageRepository.deleteById(id);
             return true;
         }
-        return false; // Image not found
+        return false;
     }
 }

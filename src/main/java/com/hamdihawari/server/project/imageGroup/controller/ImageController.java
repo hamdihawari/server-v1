@@ -16,6 +16,13 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Image> getImageById(@PathVariable Long id) {
+        return imageService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     // Get all images
     @GetMapping
     public List<Image> getAllImages() {
@@ -27,6 +34,13 @@ public class ImageController {
     public ResponseEntity<Image> createImage(@RequestBody Image image) {
         Image createdImage = imageService.createImage(image);
         return ResponseEntity.ok(createdImage);
+    }
+
+    // Create multiple images
+    @PostMapping("/batch")
+    public ResponseEntity<List<Image>> createImages(@RequestBody List<Image> images) {
+        List<Image> createdImages = imageService.createImages(images); // Implement this in ImageService
+        return ResponseEntity.ok(createdImages);
     }
 
     // Update an existing image

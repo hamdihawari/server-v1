@@ -1,25 +1,27 @@
 package com.hamdihawari.server.project.imageGroup.dto;
+
 public class ImageGroupTranslationDTO {
     private Long id;
-    private Long imageGroupId;  // Change to Long
+    private Long imageGroupId; // Ensure this is of type Long
     private String language;
     private String data;
     private String imageSubject;
     private String imageDescription;
-    private String imageResource;  // Ensure this field exists
+    private String imageResource;
 
-    // Constructor, getters, and setters
-    public ImageGroupTranslationDTO(Long id, Long imageGroupId, String language, String data, String imageSubject, String imageDescription, String imageResource) {
+    // Constructor
+    public ImageGroupTranslationDTO(Long id, Long imageGroupId, String language, String data,
+                                    String imageSubject, String imageDescription, String imageResource) {
         this.id = id;
-        this.imageGroupId = imageGroupId;
+        this.imageGroupId = imageGroupId; // Keep as Long
         this.language = language;
         this.data = data;
         this.imageSubject = imageSubject;
         this.imageDescription = imageDescription;
-        this.imageResource = imageResource;  // Ensure it's assigned
+        this.imageResource = imageResource;
     }
 
-    // Getters and setters...
+    // Getters and Setters
 
     public Long getId() {
         return id;

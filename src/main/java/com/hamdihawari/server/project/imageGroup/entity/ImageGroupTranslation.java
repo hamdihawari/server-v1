@@ -1,47 +1,37 @@
 package com.hamdihawari.server.project.imageGroup.entity;
 
 import jakarta.persistence.*;
+
 @Entity
-@Table(name = "image_group_translation")
 public class ImageGroupTranslation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "image_group_id")
-    private Long imageGroupId;  // Change to Long
+    @ManyToOne
+    @JoinColumn(name = "image_group_id", nullable = false)
+    private ImageGroup imageGroup;
 
-    @Column(name = "language")
+    @Column(nullable = false, length = 5)
     private String language;
 
-    @Column(name = "data")
+    @Column(columnDefinition = "TEXT")
     private String data;
 
-    @Column(name = "image_subject")
+    @Column(name = "image_subject", length = 255)
     private String imageSubject;
 
-    @Column(name = "image_description")
+    @Column(name = "image_description", columnDefinition = "TEXT")
     private String imageDescription;
 
-    @Column(name = "image_resource", nullable = false)
+    @Column(name = "image_resource", nullable = false, length = 255)
     private String imageResource;
 
-    // Constructors, getters, and setters
+    // Getters and Setters
 
     public ImageGroupTranslation() {
     }
-
-    public ImageGroupTranslation(Long imageGroupId, String language, String data, String imageSubject, String imageDescription, String imageResource) {
-        this.imageGroupId = imageGroupId;
-        this.language = language;
-        this.data = data;
-        this.imageSubject = imageSubject;
-        this.imageDescription = imageDescription;
-        this.imageResource = imageResource;
-    }
-
-    // Getters and setters
 
     public Long getId() {
         return id;
@@ -51,12 +41,12 @@ public class ImageGroupTranslation {
         this.id = id;
     }
 
-    public Long getImageGroupId() {
-        return imageGroupId;
+    public ImageGroup getImageGroup() {
+        return imageGroup;
     }
 
-    public void setImageGroupId(Long imageGroupId) {
-        this.imageGroupId = imageGroupId;
+    public void setImageGroup(ImageGroup imageGroup) {
+        this.imageGroup = imageGroup;
     }
 
     public String getLanguage() {
