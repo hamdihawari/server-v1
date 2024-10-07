@@ -1,9 +1,8 @@
-package com.hamdihawari.server.about;
+package com.hamdihawari.server.about.AboutMe;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface AboutMeRepository extends JpaRepository<AboutMe, Long> {
-    List<AboutMe> findByLanguage(String language);
 }

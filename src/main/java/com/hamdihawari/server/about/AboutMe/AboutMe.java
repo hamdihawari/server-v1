@@ -1,4 +1,64 @@
-package com.hamdihawari.server.about;
+package com.hamdihawari.server.about.AboutMe;
+import com.hamdihawari.server.about.AboutMeTranslation.AboutMeTranslation;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "about_me")
+public class AboutMe {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "photo")  // New column
+    private String photo;
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+}
+
+
+
+/* package com.hamdihawari.server.about;
 
 import jakarta.persistence.*;
 
@@ -86,3 +146,4 @@ import jakarta.persistence.*;
                 '}';
     }
 }
+*/
