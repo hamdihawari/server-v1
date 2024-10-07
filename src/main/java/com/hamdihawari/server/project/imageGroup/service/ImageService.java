@@ -7,14 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
 
+    private final ImageRepository imageRepository;
+
     @Autowired
-    private ImageRepository imageRepository;
+    public ImageService(ImageRepository imageRepository) {
+        this.imageRepository = imageRepository;
+    }
 
     public List<ImageDTO> getAllImages() {
         return imageRepository.findAll().stream()
@@ -22,10 +26,8 @@ public class ImageService {
                 .collect(Collectors.toList());
     }
 
-    public ImageDTO getImageById(Long id) {
-        return imageRepository.findById(id)
-                .map(this::convertToDTO)
-                .orElse(null);
+    public Optional<ImageDTO> getImageById(Long id) {
+        return imageRepository.findById(id).map(this::convertToDTO);
     }
 
     public ImageDTO createImage(ImageDTO imageDTO) {
@@ -34,15 +36,19 @@ public class ImageService {
         return convertToDTO(imageRepository.save(image));
     }
 
-    public ImageDTO updateImage(Long id, ImageDTO imageDTO) {
+    public Optional<ImageDTO> updateImage(Long id, ImageDTO imageDTO) {
         return imageRepository.findById(id).map(existingImage -> {
             existingImage.setImagePath(imageDTO.getImagePath());
             return convertToDTO(imageRepository.save(existingImage));
-        }).orElse(null);
+        });
     }
 
-    public void deleteImage(Long id) {
-        imageRepository.deleteById(id);
+    public boolean deleteImage(Long id) {
+        if (imageRepository.existsById(id)) {
+            imageRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     private ImageDTO convertToDTO(Image image) {

@@ -4,8 +4,10 @@ public class ImageDTO {
     private Long id;
     private String imagePath;
 
-    // Getters and Setters
+    // Default constructor
+    public ImageDTO() {}
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }

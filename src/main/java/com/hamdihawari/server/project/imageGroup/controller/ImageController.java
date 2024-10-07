@@ -8,14 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-
 @RestController
 @RequestMapping("/image")
 public class ImageController {
 
+    private final ImageService imageService;
+
     @Autowired
-    private ImageService imageService;
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
 
     @GetMapping
     public List<ImageDTO> getAllImages() {
@@ -24,24 +26,28 @@ public class ImageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id) {
-        ImageDTO imageDTO = imageService.getImageById(id);
-        return imageDTO != null ? ResponseEntity.ok(imageDTO) : ResponseEntity.notFound().build();
+        return imageService.getImageById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<ImageDTO> createImage(@RequestBody ImageDTO imageDTO) {
-        return new ResponseEntity<>(imageService.createImage(imageDTO), HttpStatus.CREATED);
+        return ResponseEntity.status(201).body(imageService.createImage(imageDTO));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ImageDTO> updateImage(@PathVariable Long id, @RequestBody ImageDTO imageDTO) {
-        ImageDTO updatedImage = imageService.updateImage(id, imageDTO);
-        return updatedImage != null ? ResponseEntity.ok(updatedImage) : ResponseEntity.notFound().build();
+        return imageService.updateImage(id, imageDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
-        imageService.deleteImage(id);
-        return ResponseEntity.noContent().build();
+        if (imageService.deleteImage(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

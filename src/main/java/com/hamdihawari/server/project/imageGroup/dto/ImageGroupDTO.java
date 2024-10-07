@@ -9,8 +9,10 @@ public class ImageGroupDTO {
     private String createdAt;
     private String updatedAt;
 
-    // Getters and Setters
+    // Default constructor
+    public ImageGroupDTO() {}
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }

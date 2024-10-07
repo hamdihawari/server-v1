@@ -6,10 +6,12 @@ public class ImageTranslationDTO {
     private String data;
     private String imageSubject;
     private String imageDescription;
-    private String imageResource;
+    /*private String imageResource;*/
+
+    // Default constructor
+    public ImageTranslationDTO() {}
 
     // Getters and Setters
-
     public Long getId() {
         return id;
     }
@@ -50,11 +52,11 @@ public class ImageTranslationDTO {
         this.imageDescription = imageDescription;
     }
 
-    public String getImageResource() {
+    /*public String getImageResource() {
         return imageResource;
-    }
+    }*/
 
-    public void setImageResource(String imageResource) {
+    /*public void setImageResource(String imageResource) {
         this.imageResource = imageResource;
-    }
+    }*/
 }

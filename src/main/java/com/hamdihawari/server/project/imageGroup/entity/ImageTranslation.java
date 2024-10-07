@@ -10,27 +10,26 @@ public class ImageTranslation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "image_id", nullable = false)
-    private Image image; // Reference to the associated Image
+    @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
+    private Image image;
 
     @Column(name = "language", nullable = false)
-    private String language; // Language code (e.g., "en", "de", "ar")
+    private String language;
 
     @Column(name = "data")
-    private String data; // Optional additional data for the translation
+    private String data;
 
     @Column(name = "image_subject")
-    private String imageSubject; // Subject of the image
+    private String imageSubject;
 
     @Column(name = "image_description")
-    private String imageDescription; // Description of the image
+    private String imageDescription;
 
-    @Column(name = "image_resource", nullable = false)
-    private String imageResource; // Resource link for the image
+   /* @Column(name = "image_resource", nullable = false)
+    private String imageResource;*/
 
     // Default constructor
-    public ImageTranslation() {
-    }
+    public ImageTranslation() {}
 
     // Getters and Setters
     public Long getId() {
@@ -80,12 +79,12 @@ public class ImageTranslation {
     public void setImageDescription(String imageDescription) {
         this.imageDescription = imageDescription;
     }
-
+/*
     public String getImageResource() {
         return imageResource;
     }
 
     public void setImageResource(String imageResource) {
         this.imageResource = imageResource;
-    }
+    }*/
 }

@@ -3,52 +3,45 @@ package com.hamdihawari.server.project.imageGroup.entity;
 import com.hamdihawari.server.project.projectDetails.entity.ProjectDetails;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "image_group")
 public class ImageGroup {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "project_detail_id", nullable = false)
-    private Long projectDetailId;
-
-    @ManyToOne
-    @JoinColumn(name = "project_detail_id", insertable = false, updatable = false)  // Marking it read-only
+    @ManyToOne(fetch = FetchType.LAZY)  // Lazy fetching for better performance
+    @JoinColumn(name = "project_detail_id", nullable = false)
     private ProjectDetails projectDetail;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "imageGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Image> images;
+    @OneToMany(mappedBy = "imageGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
 
-    // Default constructor
+    // Constructors
     public ImageGroup() {
+        // Automatically set createdAt on object creation
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getProjectDetailId() {
-        return projectDetailId;
-    }
-
-    public void setProjectDetailId(Long projectDetailId) {
-        this.projectDetailId = projectDetailId;
     }
 
     public ProjectDetails getProjectDetail() {
@@ -63,6 +56,7 @@ public class ImageGroup {
         return createdAt;
     }
 
+    // Optional: Remove the setter for createdAt to prevent it from being updated
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -81,5 +75,22 @@ public class ImageGroup {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    // Utility methods for managing images in the group
+    public void addImage(Image image) {
+        images.add(image);
+        image.setImageGroup(this);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
+        image.setImageGroup(null);
+    }
+
+    // Lifecycle callback to update the updatedAt timestamp automatically
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
