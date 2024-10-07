@@ -1,13 +1,16 @@
 package com.hamdihawari.server.project.imageGroup.service;
 
+import com.hamdihawari.server.project.imageGroup.dto.ImageDTO;
 import com.hamdihawari.server.project.imageGroup.dto.ImageGroupDTO;
+import com.hamdihawari.server.project.imageGroup.entity.Image;
 import com.hamdihawari.server.project.imageGroup.entity.ImageGroup;
 import com.hamdihawari.server.project.imageGroup.repository.ImageGroupRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageGroupService {
@@ -15,70 +18,58 @@ public class ImageGroupService {
     @Autowired
     private ImageGroupRepository imageGroupRepository;
 
-    public List<ImageGroup> getAllImageGroups() {
-        return imageGroupRepository.findAll();
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public List<ImageGroupDTO> getAllImageGroups() {
+        return imageGroupRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public ImageGroup createImageGroup(ImageGroup imageGroup) {
-        return imageGroupRepository.save(imageGroup);
+    public ImageGroupDTO getImageGroupById(Long id) {
+        return imageGroupRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElse(null);
     }
 
-    public ImageGroup updateImageGroup(Long id, ImageGroupDTO imageGroupDTO) {
-        ImageGroup imageGroup = imageGroupRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Image Group not found"));
+    public ImageGroupDTO createImageGroup(ImageGroupDTO imageGroupDTO) {
+        ImageGroup imageGroup = new ImageGroup();
         imageGroup.setProjectDetailId(imageGroupDTO.getProjectDetailId());
-        return imageGroupRepository.save(imageGroup);
+        return convertToDTO(imageGroupRepository.save(imageGroup));
     }
 
-    public boolean deleteImageGroup(Long id) {
-        if (imageGroupRepository.existsById(id)) {
-            imageGroupRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
-}
-
-/*
-package com.hamdihawari.server.project.imageGroup.service;
-
-import com.hamdihawari.server.project.imageGroup.entity.ImageGroup;
-import com.hamdihawari.server.project.imageGroup.repository.ImageGroupRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-@Service
-public class ImageGroupService {
-
-    @Autowired
-    private ImageGroupRepository imageGroupRepository;
-
-    public List<ImageGroup> getAllImageGroups() {
-        return imageGroupRepository.findAll();
+    public ImageGroupDTO updateImageGroup(Long id, ImageGroupDTO imageGroupDTO) {
+        return imageGroupRepository.findById(id).map(existingGroup -> {
+            existingGroup.setProjectDetailId(imageGroupDTO.getProjectDetailId());
+            return convertToDTO(imageGroupRepository.save(existingGroup));
+        }).orElse(null);
     }
 
-    public ImageGroup createImageGroup(ImageGroup imageGroup) {
-        return imageGroupRepository.save(imageGroup);
+    public void deleteImageGroup(Long id) {
+        imageGroupRepository.deleteById(id);
     }
 
-    public ImageGroup updateImageGroup(Long id, ImageGroup updatedImageGroup) {
-        ImageGroup existingImageGroup = imageGroupRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ImageGroup not found with id " + id));
+    // Convert ImageGroup entity to DTO, including date formatting
+    private ImageGroupDTO convertToDTO(ImageGroup imageGroup) {
+        ImageGroupDTO dto = new ImageGroupDTO();
+        dto.setId(imageGroup.getId());
+        dto.setProjectDetailId(imageGroup.getProjectDetailId());
 
-        existingImageGroup.setProjectDetailId(updatedImageGroup.getProjectDetailId());
+        // Formatting LocalDateTime to String
+        dto.setCreatedAt(imageGroup.getCreatedAt() != null ? imageGroup.getCreatedAt().format(formatter) : null);
+        dto.setUpdatedAt(imageGroup.getUpdatedAt() != null ? imageGroup.getUpdatedAt().format(formatter) : null);
 
-        return imageGroupRepository.save(existingImageGroup);
+        // Converting Image entities to DTOs
+        dto.setImages(imageGroup.getImages().stream()
+                .map(this::convertImageToDTO)
+                .collect(Collectors.toList()));
+        return dto;
     }
 
-    public void deleteImageGroupById(Long id) {
-        // Check if the entity exists before trying to delete it
-        if (!imageGroupRepository.existsById(id)) {
-            throw new EntityNotFoundException("ImageGroup not found with id: " + id);
-        }
-        imageGroupRepository.deleteById(id); // Delete the entity
+    private ImageDTO convertImageToDTO(Image image) {
+        ImageDTO dto = new ImageDTO();
+        dto.setId(image.getId());
+        dto.setImagePath(image.getImagePath());
+        return dto;
     }
 }
-*/

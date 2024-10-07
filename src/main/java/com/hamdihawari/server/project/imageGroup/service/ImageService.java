@@ -1,12 +1,14 @@
 package com.hamdihawari.server.project.imageGroup.service;
 
+import com.hamdihawari.server.project.imageGroup.dto.ImageDTO;
 import com.hamdihawari.server.project.imageGroup.entity.Image;
 import com.hamdihawari.server.project.imageGroup.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -14,35 +16,39 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
-    public Optional<Image> findById(Long id) {
-        return imageRepository.findById(id);
+    public List<ImageDTO> getAllImages() {
+        return imageRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Image> getAllImages() {
-        return imageRepository.findAll();
+    public ImageDTO getImageById(Long id) {
+        return imageRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElse(null);
     }
 
-    public List<Image> createImages(List<Image> images) {
-        return imageRepository.saveAll(images); // This will save all images in one go
+    public ImageDTO createImage(ImageDTO imageDTO) {
+        Image image = new Image();
+        image.setImagePath(imageDTO.getImagePath());
+        return convertToDTO(imageRepository.save(image));
     }
 
-    public Image createImage(Image image) {
-        return imageRepository.save(image);
+    public ImageDTO updateImage(Long id, ImageDTO imageDTO) {
+        return imageRepository.findById(id).map(existingImage -> {
+            existingImage.setImagePath(imageDTO.getImagePath());
+            return convertToDTO(imageRepository.save(existingImage));
+        }).orElse(null);
     }
 
-    public Optional<Image> updateImage(Long id, Image imageDetails) {
-        return imageRepository.findById(id).map(image -> {
-            image.setImagePath(imageDetails.getImagePath());
-            image.setImageGroup(imageDetails.getImageGroup()); // Assuming you want to update the image group as well
-            return imageRepository.save(image);
-        });
+    public void deleteImage(Long id) {
+        imageRepository.deleteById(id);
     }
 
-    public boolean deleteImage(Long id) {
-        if (imageRepository.existsById(id)) {
-            imageRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    private ImageDTO convertToDTO(Image image) {
+        ImageDTO dto = new ImageDTO();
+        dto.setId(image.getId());
+        dto.setImagePath(image.getImagePath());
+        return dto;
     }
 }

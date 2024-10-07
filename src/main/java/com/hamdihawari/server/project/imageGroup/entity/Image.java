@@ -1,31 +1,30 @@
 package com.hamdihawari.server.project.imageGroup.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "image")
 public class Image {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne // Assuming many images belong to one image group
-    @JoinColumn(name = "image_group_id") // Ensure the correct foreign key name
-    private ImageGroup imageGroup;
+    @ManyToOne
+    @JoinColumn(name = "image_group_id", nullable = false)
+    private ImageGroup imageGroup; // Reference to the associated ImageGroup
 
-    @Column(name = "image_path")
-    private String imagePath;
+    @Column(name = "image_path", nullable = false)
+    private String imagePath; // Path to the image file
 
+    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageTranslation> translations; // List of translations for this image
+
+    // Default constructor
     public Image() {
     }
 
-    public Image(Long id, ImageGroup imageGroup, String imagePath) {
-        this.id = id;
-        this.imageGroup = imageGroup;
-        this.imagePath = imagePath;
-    }
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -48,5 +47,13 @@ public class Image {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public List<ImageTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<ImageTranslation> translations) {
+        this.translations = translations;
     }
 }

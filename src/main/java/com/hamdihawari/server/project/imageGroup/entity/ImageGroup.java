@@ -1,13 +1,13 @@
 package com.hamdihawari.server.project.imageGroup.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.hamdihawari.server.project.projectDetails.entity.ProjectDetails; // Ensure this is the correct import
+import com.hamdihawari.server.project.projectDetails.entity.ProjectDetails;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "image_group")
 public class ImageGroup {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,15 +16,22 @@ public class ImageGroup {
     private Long projectDetailId;
 
     @ManyToOne
-    @JoinColumn(name = "project_detail_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonBackReference // This prevents infinite recursion
+    @JoinColumn(name = "project_detail_id", insertable = false, updatable = false)  // Marking it read-only
     private ProjectDetails projectDetail;
 
-    public ImageGroup() {
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public ImageGroup(Long projectDetailId) {
-        this.projectDetailId = projectDetailId;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "imageGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Image> images;
+
+    // Default constructor
+    public ImageGroup() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -50,5 +57,29 @@ public class ImageGroup {
 
     public void setProjectDetail(ProjectDetails projectDetail) {
         this.projectDetail = projectDetail;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }
