@@ -1,3 +1,43 @@
+package com.hamdihawari.server.about.AboutMe;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/about_me")
+public class AboutMeController {
+
+    @Autowired
+    private AboutMeService aboutMeService;
+
+    // GET: Get the first available AboutMe (without ID)
+    @GetMapping
+    public ResponseEntity<AboutMeDTO> getFirstAboutMe() {
+        AboutMeDTO aboutMeDTO = aboutMeService.getFirstAboutMe();
+        return ResponseEntity.ok(aboutMeDTO);
+    }
+
+    // Existing GET by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<AboutMeDTO> getAboutMe(@PathVariable Long id) {
+        AboutMeDTO aboutMeDTO = aboutMeService.getAboutMe(id);
+        return ResponseEntity.ok(aboutMeDTO);
+    }
+
+    // Update method remains the same
+    @CrossOrigin(origins = "http://localhost:5173")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<AboutMeDTO> updateAboutMe(
+            @PathVariable Long id,
+            @RequestBody AboutMeDTO aboutMeDTO) {
+        AboutMeDTO updated = aboutMeService.updateAboutMe(id, aboutMeDTO);
+        return ResponseEntity.ok(updated);
+    }
+}
+
+
+/*
 package com.hamdihawari.server.about;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +48,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-/*@RestController
-@CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("/about")*/
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/about")
@@ -74,3 +111,4 @@ public class AboutMeController {
         }
     }
 }
+*/
