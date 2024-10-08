@@ -2,7 +2,7 @@ package com.hamdihawari.server.project.projectDetails.entity;
 
 import com.hamdihawari.server.project.language.entity.Language;
 import jakarta.persistence.*;
-import com.hamdihawari.server.project.projectDetails.entity.ProjectDetailsTranslation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "project_details_translation")
@@ -14,12 +14,12 @@ public class ProjectDetailsTranslation {
 
     @ManyToOne
     @JoinColumn(name = "project_details_id", nullable = false)
+    @JsonBackReference // Break the recursion by making this reference ignored in the reverse direction
     private ProjectDetails projectDetails;
 
     @ManyToOne
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
-
 
     @Column(columnDefinition = "TEXT")
     private String subjectDetails;

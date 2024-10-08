@@ -1,5 +1,6 @@
 package com.hamdihawari.server.project.projectDetails.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hamdihawari.server.project.imageGroup.entity.ImageGroup;
 import jakarta.persistence.*;
@@ -17,12 +18,19 @@ public class ProjectDetails {
     @Column(name = "project_card_id", nullable = false)
     private Long projectCardId;
 
+    // Prevent circular reference when serializing
+    @OneToMany(mappedBy = "projectDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Controls serialization from ProjectDetails to ProjectDetailsTranslation
+    private List<ProjectDetailsTranslation> translations;
+
     @OneToMany(mappedBy = "projectDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore // Prevents serialization of this relationship to avoid unnecessary recursion
     private List<ImageGroup> imageGroups;
 
     public ProjectDetails() {
     }
+
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -30,6 +38,14 @@ public class ProjectDetails {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<ProjectDetailsTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<ProjectDetailsTranslation> translations) {
+        this.translations = translations;
     }
 
     public List<ImageGroup> getImageGroups() {
