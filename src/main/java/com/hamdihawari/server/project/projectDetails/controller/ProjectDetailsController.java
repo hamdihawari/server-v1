@@ -7,13 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/project_details")
 public class ProjectDetailsController {
 
-    @Autowired
-    private ProjectDetailsService projectDetailsService;
+    private final ProjectDetailsService projectDetailsService;
 
     @Autowired
     public ProjectDetailsController(ProjectDetailsService projectDetailsService) {
@@ -24,7 +24,7 @@ public class ProjectDetailsController {
     @GetMapping("/{projectCardId}")
     public ResponseEntity<ProjectDetails> getProjectDetailsByProjectCardId(@PathVariable Long projectCardId) {
         ProjectDetails details = projectDetailsService.getProjectDetailsByProjectCardId(projectCardId);
-        return details != null ? ResponseEntity.ok(details) : ResponseEntity.notFound().build();
+        return ResponseEntity.of(Optional.ofNullable(details));
     }
 
     // Get all project details
@@ -36,8 +36,9 @@ public class ProjectDetailsController {
 
     // Create new project details
     @PostMapping
-    public ProjectDetails createProjectDetails(@RequestBody ProjectDetails projectDetails) {
-        return projectDetailsService.saveProjectDetails(projectDetails);
+    public ResponseEntity<ProjectDetails> createProjectDetails(@RequestBody ProjectDetails projectDetails) {
+        ProjectDetails createdDetails = projectDetailsService.saveProjectDetails(projectDetails);
+        return ResponseEntity.status(201).body(createdDetails); // 201 Created
     }
 
     // Delete project details by ID
@@ -53,7 +54,6 @@ public class ProjectDetailsController {
             @PathVariable Long id,
             @RequestBody ProjectDetails projectDetails) {
         ProjectDetails updatedDetails = projectDetailsService.updateProjectDetails(id, projectDetails);
-        return updatedDetails != null ? ResponseEntity.ok(updatedDetails) : ResponseEntity.notFound().build();
+        return ResponseEntity.of(Optional.ofNullable(updatedDetails));
     }
-
 }

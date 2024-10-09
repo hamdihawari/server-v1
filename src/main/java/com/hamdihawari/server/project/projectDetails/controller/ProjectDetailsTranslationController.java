@@ -6,7 +6,7 @@ import com.hamdihawari.server.project.projectDetails.dto.ProjectDetailsTranslati
 import com.hamdihawari.server.project.projectDetails.entity.ProjectDetails;
 import com.hamdihawari.server.project.projectDetails.entity.ProjectDetailsTranslation;
 import com.hamdihawari.server.project.projectDetails.service.ProjectDetailsTranslationService;
-import com.hamdihawari.server.project.projectDetails.service.ProjectDetailsService; // Import your service
+import com.hamdihawari.server.project.projectDetails.service.ProjectDetailsService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,14 +19,19 @@ import java.util.List;
 @RequestMapping("/project_details_translation")
 public class ProjectDetailsTranslationController {
 
-    @Autowired
-    private ProjectDetailsTranslationService projectDetailsTranslationService;
+    private final ProjectDetailsTranslationService projectDetailsTranslationService;
+    private final ProjectDetailsService projectDetailsService;
+    private final LanguageRepository languageRepository;
 
     @Autowired
-    private ProjectDetailsService projectDetailsService;
-
-    @Autowired
-    private LanguageRepository languageRepository;
+    public ProjectDetailsTranslationController(
+            ProjectDetailsTranslationService projectDetailsTranslationService,
+            ProjectDetailsService projectDetailsService,
+            LanguageRepository languageRepository) {
+        this.projectDetailsTranslationService = projectDetailsTranslationService;
+        this.projectDetailsService = projectDetailsService;
+        this.languageRepository = languageRepository;
+    }
 
     @GetMapping
     public ResponseEntity<List<ProjectDetailsTranslation>> getAllProjectDetailsTranslations() {
@@ -34,6 +39,12 @@ public class ProjectDetailsTranslationController {
         return ResponseEntity.ok(translations);
     }
 
+    // New method to get translation by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectDetailsTranslation> getTranslationById(@PathVariable Long id) {
+        ProjectDetailsTranslation translation = projectDetailsTranslationService.getTranslationById(id);
+        return ResponseEntity.ok().body(translation);
+    }
 
     @PostMapping
     public ResponseEntity<ProjectDetailsTranslation> createTranslation(@RequestBody ProjectDetailsTranslationDTO translationDTO) {
@@ -54,96 +65,30 @@ public class ProjectDetailsTranslationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTranslation);
     }
 
-
     @GetMapping("/project/{projectDetailsId}")
-    public List<ProjectDetailsTranslation> getTranslationsByProjectDetailsId(@PathVariable Long projectDetailsId) {
-        return projectDetailsTranslationService.getTranslationsByProjectDetailsId(projectDetailsId);
-    }
-
-    @GetMapping("/project/{projectDetailsId}/language/{languageCode}")
-    public ResponseEntity<ProjectDetailsTranslation> getProjectDetailsTranslationByLanguage(
-            @PathVariable Long projectDetailsId, @PathVariable String languageCode) {
-        ProjectDetailsTranslation translation = projectDetailsTranslationService
-                .getTranslationByProjectDetailsAndLanguage(projectDetailsId, languageCode);
-        return translation != null ? ResponseEntity.ok(translation) : ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ProjectDetailsTranslation> updateTranslation(
-            @PathVariable Long id, @RequestBody ProjectDetailsTranslation translation) {
-        ProjectDetailsTranslation updatedTranslation = projectDetailsTranslationService.updateTranslation(id, translation);
-        return updatedTranslation != null ? ResponseEntity.ok(updatedTranslation) : ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTranslation(@PathVariable Long id) {
-        projectDetailsTranslationService.deleteTranslation(id);
-        return ResponseEntity.noContent().build();
-    }
-}
-
-
-
-// this without dto and working well
-/*
-package com.hamdihawari.server.project.projectDetails.controller;
-
-import com.hamdihawari.server.project.projectDetails.entity.ProjectDetailsTranslation;
-import com.hamdihawari.server.project.projectDetails.service.ProjectDetailsTranslationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/project_details_translation")
-public class ProjectDetailsTranslationController {
-
-    @Autowired
-    private ProjectDetailsTranslationService projectDetailsTranslationService; // Correctly autowire the service
-
-    // Get all project details translations
-    @GetMapping
-    public ResponseEntity<List<ProjectDetailsTranslation>> getAllProjectDetailsTranslations() {
-        List<ProjectDetailsTranslation> translations = projectDetailsTranslationService.getAllTranslations();
+    public ResponseEntity<List<ProjectDetailsTranslation>> getTranslationsByProjectDetailsId(@PathVariable Long projectDetailsId) {
+        List<ProjectDetailsTranslation> translations = projectDetailsTranslationService.getTranslationsByProjectDetailsId(projectDetailsId);
         return ResponseEntity.ok(translations);
     }
 
-    // Get translations by project details ID
-    @GetMapping("/project/{projectDetailsId}")
-    public List<ProjectDetailsTranslation> getTranslationsByProjectDetailsId(@PathVariable Long projectDetailsId) {
-        return projectDetailsTranslationService.getTranslationsByProjectDetailsId(projectDetailsId);
-    }
-
-    // Get translation by project details ID and language code
     @GetMapping("/project/{projectDetailsId}/language/{languageCode}")
     public ResponseEntity<ProjectDetailsTranslation> getProjectDetailsTranslationByLanguage(
             @PathVariable Long projectDetailsId, @PathVariable String languageCode) {
         ProjectDetailsTranslation translation = projectDetailsTranslationService
                 .getTranslationByProjectDetailsAndLanguage(projectDetailsId, languageCode);
-        return translation != null ? ResponseEntity.ok(translation) : ResponseEntity.notFound().build();
-    }
-
-    // Create a new translation
-    @PostMapping
-    public ProjectDetailsTranslation createTranslation(@RequestBody ProjectDetailsTranslation translation) {
-        return projectDetailsTranslationService.saveTranslation(translation);
+        return ResponseEntity.ok().body(translation);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDetailsTranslation> updateTranslation(
             @PathVariable Long id, @RequestBody ProjectDetailsTranslation translation) {
-        System.out.println("Updating translation with ID: " + id);
         ProjectDetailsTranslation updatedTranslation = projectDetailsTranslationService.updateTranslation(id, translation);
         return updatedTranslation != null ? ResponseEntity.ok(updatedTranslation) : ResponseEntity.notFound().build();
     }
 
-    // Delete a translation
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTranslation(@PathVariable Long id) {
         projectDetailsTranslationService.deleteTranslation(id);
         return ResponseEntity.noContent().build();
     }
 }
-*/
