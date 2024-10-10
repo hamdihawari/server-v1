@@ -1,3 +1,4 @@
+
 package com.hamdihawari.server.project.projectCard.controller;
 
 import com.hamdihawari.server.project.projectCard.dto.ProjectCardTranslationDTO;
@@ -13,63 +14,66 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/project_card_translation")
 public class ProjectCardTranslationController {
 
-    @Autowired
-    private ProjectCardTranslationService projectCardTranslationService;
+    private final ProjectCardTranslationService projectCardTranslationService;
+    private final ProjectCardService projectCardService;
+    private final LanguageService languageService;
 
     @Autowired
-    private ProjectCardService projectCardService;
-
-    @Autowired
-    private LanguageService languageService;
-
-    // Mapping for creating a translation
-    @PostMapping("/project_card_translation/create")
-    public ResponseEntity<ProjectCardTranslation> createTranslation(@RequestBody ProjectCardTranslationDTO translationDTO) {
-        ProjectCardTranslation translation = new ProjectCardTranslation();
-
-        translation.setProjectCard(projectCardService.findById(translationDTO.getProjectCardId()));
-        translation.setLanguage(languageService.findById(translationDTO.getLanguageId()));
-        translation.setSubject(translationDTO.getSubject());
-        translation.setData(translationDTO.getData());
-        translation.setDescription(translationDTO.getDescription());
-
-        ProjectCardTranslation savedTranslation = projectCardTranslationService.save(translation);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedTranslation);
+    public ProjectCardTranslationController(ProjectCardTranslationService projectCardTranslationService,
+                                            ProjectCardService projectCardService,
+                                            LanguageService languageService) {
+        this.projectCardTranslationService = projectCardTranslationService;
+        this.projectCardService = projectCardService;
+        this.languageService = languageService;
     }
 
-    // Mapping for creating a project card translation with a different endpoint
-    @PostMapping("/project_card_translation/custom_create")
-    public ResponseEntity<?> createProjectCardTranslation(@RequestBody ProjectCardTranslationDTO dto) {
-        try {
-            ProjectCardTranslation translation = projectCardTranslationService.createProjectCardTranslation(dto);
-            return new ResponseEntity<>(translation, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    // http://localhost:8080/project_card_translation/project/1/language/en
+    @GetMapping("/project/{id}/language/{code}")
+    public ResponseEntity<ProjectCardTranslation> getProjectTranslationByIdAndLanguage(@PathVariable Long id, @PathVariable String code) {
+        ProjectCardTranslation translation = projectCardTranslationService.findTranslationByIdAndLanguageCode(id, code);
+        if (translation != null) {
+            return ResponseEntity.ok(translation);
+        } else {
+            System.out.println("Translation not found for projectCardId: " + id + " and languageCode: " + code);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // No body returned for not found
         }
     }
 
-    // Mapping for fetching all project card translations
-    @GetMapping("/project_card_translation")
+    // http://localhost:8080/project_card_translation/project/1/language/id/1
+    // New endpoint to get translation by language ID
+    @GetMapping("/project/{id}/language/id/{languageId}")
+    public ResponseEntity<ProjectCardTranslation> getProjectTranslationByIdAndLanguageId(@PathVariable Long id, @PathVariable Long languageId) {
+        ProjectCardTranslation translation = projectCardTranslationService.findTranslationByIdAndLanguageId(id, languageId);
+        if (translation != null) {
+            return ResponseEntity.ok(translation);
+        } else {
+            System.out.println("Translation not found for projectCardId: " + id + " and languageId: " + languageId);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ProjectCardTranslation> createTranslation(@RequestBody ProjectCardTranslationDTO translationDTO) {
+        ProjectCardTranslation translation = projectCardTranslationService.createProjectCardTranslation(translationDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(translation);
+    }
+
+    @GetMapping
     public ResponseEntity<List<ProjectCardTranslation>> getAllTranslations() {
         List<ProjectCardTranslation> translations = projectCardTranslationService.findAll();
         return ResponseEntity.ok(translations);
     }
 
-    // Mapping for fetching a project card translation by ID
-    @GetMapping("/project_card_translation/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProjectCardTranslation> getTranslationById(@PathVariable Long id) {
         ProjectCardTranslation translation = projectCardTranslationService.findById(id);
-        if (translation != null) {
-            return ResponseEntity.ok(translation);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return translation != null ? ResponseEntity.ok(translation) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    // Mapping for updating a project card translation (PUT method)
-    @PutMapping("/project_card_translation/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateTranslation(@PathVariable Long id, @RequestBody ProjectCardTranslationDTO translationDTO) {
         ProjectCardTranslation existingTranslation = projectCardTranslationService.findById(id);
         if (existingTranslation == null) {
@@ -90,18 +94,17 @@ public class ProjectCardTranslationController {
             existingTranslation.setLanguage(languageService.findById(translationDTO.getLanguageId()));
         }
 
-        // Save the updated translation
         ProjectCardTranslation updatedTranslation = projectCardTranslationService.save(existingTranslation);
         return ResponseEntity.ok(updatedTranslation);
     }
 
-    @DeleteMapping("/project_card_translation/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTranslation(@PathVariable Long id) {
         try {
             projectCardTranslationService.deleteTranslation(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Return 204 No Content on success
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return 404 if the entity was not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

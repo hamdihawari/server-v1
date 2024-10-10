@@ -15,14 +15,40 @@ import java.util.List;
 @Service
 public class ProjectCardTranslationService {
 
-    @Autowired
-    private ProjectCardTranslationRepository projectCardTranslationRepository;
+    private final ProjectCardTranslationRepository projectCardTranslationRepository;
+    private final ProjectCardRepository projectCardRepository;
+    private final LanguageRepository languageRepository;
 
     @Autowired
-    private ProjectCardRepository projectCardRepository;
+    public ProjectCardTranslationService(ProjectCardTranslationRepository projectCardTranslationRepository,
+                                         ProjectCardRepository projectCardRepository,
+                                         LanguageRepository languageRepository) {
+        this.projectCardTranslationRepository = projectCardTranslationRepository;
+        this.projectCardRepository = projectCardRepository;
+        this.languageRepository = languageRepository;
+    }
 
-    @Autowired
-    private LanguageRepository languageRepository;
+    public ProjectCardTranslation findTranslationByIdAndLanguageCode(Long id, String languageCode) {
+        Language language = languageRepository.findByCode(languageCode);
+        if (language == null) {
+            language = languageRepository.findByCode(languageCode.toLowerCase());
+        }
+
+        if (language == null) {
+            // Log that the language was not found
+            System.out.println("Language not found for code: " + languageCode);
+            return null; // This will lead to a 404 in the controller
+        }
+
+        return projectCardTranslationRepository.findByProjectCardIdAndLanguageId(id, language.getId());
+    }
+
+
+
+    public ProjectCardTranslation findTranslationByIdAndLanguageId(Long id, Long languageId) {
+        System.out.println("Finding translation with projectCardId: " + id + " and languageId: " + languageId);
+        return projectCardTranslationRepository.findByProjectCardIdAndLanguageId(id, languageId);
+    }
 
     public ProjectCardTranslation createProjectCardTranslation(ProjectCardTranslationDTO dto) {
         ProjectCardTranslation translation = new ProjectCardTranslation();
@@ -60,5 +86,4 @@ public class ProjectCardTranslationService {
     public void deleteTranslation(Long id) {
         projectCardTranslationRepository.deleteById(id);
     }
-
 }
