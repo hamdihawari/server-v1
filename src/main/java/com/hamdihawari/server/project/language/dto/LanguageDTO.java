@@ -5,8 +5,9 @@ public class LanguageDTO {
 
     private Long id;
     private String name;
+    private String code;
 
-    // Getter und Setter
+
     public Long getId() {
         return id;
     }
@@ -21,5 +22,13 @@ public class LanguageDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
