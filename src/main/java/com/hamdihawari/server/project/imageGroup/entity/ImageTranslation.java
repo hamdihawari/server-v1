@@ -1,5 +1,6 @@
 package com.hamdihawari.server.project.imageGroup.entity;
 
+import com.hamdihawari.server.project.language.entity.Language;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,11 +11,12 @@ public class ImageTranslation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
-    private Image image;
+    @JoinColumn(name = "language_id", nullable = false)  // Explicitly specify the column name
+    private Language language;
 
-    @Column(name = "language", nullable = false)
-    private String language;
+    @ManyToOne
+    @JoinColumn(name = "image_id", nullable = false)
+    private Image image;
 
     @Column(name = "data")
     private String data;
@@ -25,13 +27,12 @@ public class ImageTranslation {
     @Column(name = "image_description")
     private String imageDescription;
 
-   /* @Column(name = "image_resource", nullable = false)
-    private String imageResource;*/
-
     // Default constructor
     public ImageTranslation() {}
 
     // Getters and Setters
+
+
     public Long getId() {
         return id;
     }
@@ -40,20 +41,20 @@ public class ImageTranslation {
         this.id = id;
     }
 
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
     public Image getImage() {
         return image;
     }
 
     public void setImage(Image image) {
         this.image = image;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public String getData() {
@@ -79,12 +80,4 @@ public class ImageTranslation {
     public void setImageDescription(String imageDescription) {
         this.imageDescription = imageDescription;
     }
-/*
-    public String getImageResource() {
-        return imageResource;
-    }
-
-    public void setImageResource(String imageResource) {
-        this.imageResource = imageResource;
-    }*/
 }
