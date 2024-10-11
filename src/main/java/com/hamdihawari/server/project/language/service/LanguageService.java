@@ -34,4 +34,9 @@ public class LanguageService {
         return languageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Language not found with id: " + id));
     }
+
+    public Language findLanguageByCode(String code) {
+        return languageRepository.findByCode(code); // Implement this method in your Language repository
+    }
+
 }

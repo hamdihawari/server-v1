@@ -2,11 +2,10 @@ package com.hamdihawari.server.project.imageGroup.dto;
 
 public class ImageTranslationDTO {
     private Long id;
-    private String language;
+    private String languageCode;
     private String data;
     private String imageSubject;
     private String imageDescription;
-    /*private String imageResource;*/
 
     // Default constructor
     public ImageTranslationDTO() {}
@@ -18,14 +17,6 @@ public class ImageTranslationDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public String getData() {
@@ -52,11 +43,11 @@ public class ImageTranslationDTO {
         this.imageDescription = imageDescription;
     }
 
-    /*public String getImageResource() {
-        return imageResource;
-    }*/
+    public String getLanguageCode() {
+        return languageCode;
+    }
 
-    /*public void setImageResource(String imageResource) {
-        this.imageResource = imageResource;
-    }*/
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 }
