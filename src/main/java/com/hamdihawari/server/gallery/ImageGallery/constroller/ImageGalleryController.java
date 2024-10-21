@@ -30,6 +30,21 @@ public class ImageGalleryController {
         return new ResponseEntity<>(gallery, HttpStatus.OK);
     }
 
+    // Fetch image galleries by category name and language
+    @GetMapping("/category/{category}/language/{languageId}")
+    public ResponseEntity<List<ImageGalleryDTO>> getImageGalleriesByCategoryAndLanguage(
+            @PathVariable String category,
+            @PathVariable Long languageId) {
+        List<ImageGalleryDTO> galleries = imageGalleryService.getImageGalleriesByCategoryAndLanguage(category, languageId);
+        return new ResponseEntity<>(galleries, HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<ImageGalleryDTO>> getImageGalleriesByCategory(@PathVariable String category) {
+        List<ImageGalleryDTO> galleries = imageGalleryService.getImageGalleriesByCategory(category);
+        return new ResponseEntity<>(galleries, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<ImageGalleryDTO> createGallery(@RequestBody ImageGalleryDTO imageGalleryDTO) {
         ImageGalleryDTO createdGallery = imageGalleryService.createGallery(imageGalleryDTO);

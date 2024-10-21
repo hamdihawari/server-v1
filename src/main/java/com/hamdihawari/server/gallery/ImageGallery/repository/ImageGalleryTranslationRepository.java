@@ -22,6 +22,7 @@ public interface ImageGalleryTranslationRepository extends JpaRepository<ImageGa
     // Find a translation by imageGalleryId and languageId
     @Query("SELECT t FROM ImageGalleryTranslation t WHERE t.imageGallery.id = :imageGalleryId AND t.language.id = :languageId")
     Optional<ImageGalleryTranslation> findByImageGalleryIdAndLanguageId(@Param("imageGalleryId") Long imageGalleryId, @Param("languageId") Long languageId);
+
 }
 
 
