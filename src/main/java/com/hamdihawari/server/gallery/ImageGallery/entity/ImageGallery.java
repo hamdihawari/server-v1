@@ -25,7 +25,7 @@ public class ImageGallery {
     private ZonedDateTime updatedAt = ZonedDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_image_gallery_category"), nullable = true)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_image_gallery_category"), nullable = false)
     private Category category;
 
     // Getters and Setters

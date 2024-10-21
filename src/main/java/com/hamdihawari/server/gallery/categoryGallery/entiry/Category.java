@@ -13,16 +13,32 @@ public class Category {
     private Long id;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private ZonedDateTime createdAt = ZonedDateTime.now();
+    private ZonedDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private ZonedDateTime updatedAt = ZonedDateTime.now();
+    private ZonedDateTime updatedAt;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageGallery> imageGalleries;
 
-    // Getters and Setters
+    // Constructor
+    public Category() {
+        this.createdAt = ZonedDateTime.now(); // Initialize with current timestamp
+        this.updatedAt = ZonedDateTime.now();
+    }
 
+    // Lifecycle callbacks to handle createdAt and updatedAt
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = ZonedDateTime.now();
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -52,4 +52,16 @@ public class ImageGalleryService {
     public void deleteGallery(Long id) {
         imageGalleryRepository.deleteById(id);
     }
+
+    // Fetch galleries by category name
+    public List<ImageGalleryDTO> getImageGalleriesByCategory(String category) {
+        List<ImageGallery> galleries = imageGalleryRepository.findByCategoryName(category);
+        return galleries.stream().map(imageGalleryMapper::toDTO).collect(Collectors.toList());
+    }
+
+    // Fetch galleries by category name and language
+    public List<ImageGalleryDTO> getImageGalleriesByCategoryAndLanguage(String categoryName, Long languageId) {
+        List<ImageGallery> galleries = imageGalleryRepository.findByCategoryNameAndLanguage(categoryName, languageId);
+        return galleries.stream().map(imageGalleryMapper::toDTO).collect(Collectors.toList());
+    }
 }
