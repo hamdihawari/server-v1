@@ -41,8 +41,20 @@ public class ImageGalleryService {
     public ImageGalleryDTO updateGallery(Long id, ImageGalleryDTO imageGalleryDTO){
         ImageGallery imageGallery = imageGalleryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gallery not found"));
+
+        // Update fields related to the image gallery, including new fields
         imageGallery.setOriginal(imageGalleryDTO.getOriginal());
         imageGallery.setThumbnail(imageGalleryDTO.getThumbnail());
+        imageGallery.setTaken(imageGalleryDTO.getTaken());
+        imageGallery.setCameraMake(imageGalleryDTO.getCameraMake());
+        imageGallery.setCameraModel(imageGalleryDTO.getCameraModel());
+        imageGallery.setLens(imageGalleryDTO.getLens());
+        imageGallery.setAperture(imageGalleryDTO.getAperture());
+        imageGallery.setLensType(imageGalleryDTO.getLensType());
+        imageGallery.setAutofocus(imageGalleryDTO.getAutofocus());
+        imageGallery.setShutterSpeed(imageGalleryDTO.getShutterSpeed());
+        imageGallery.setFlashUsed(imageGalleryDTO.getFlashUsed());
+        imageGallery.setIsoValue(imageGalleryDTO.getIsoValue());
         imageGallery.setUpdatedAt(imageGalleryDTO.getUpdatedAt());
 
         ImageGallery updatedGallery = imageGalleryRepository.save(imageGallery);
