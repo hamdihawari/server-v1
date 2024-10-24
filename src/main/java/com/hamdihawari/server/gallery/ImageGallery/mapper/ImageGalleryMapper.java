@@ -9,6 +9,9 @@ import org.mapstruct.Mapping;
 public interface ImageGalleryMapper {
 
     @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "taken", target = "taken")
+    @Mapping(source = "cameraMake", target = "cameraMake")
+
     ImageGalleryDTO toDTO(ImageGallery imageGallery);
 
     @Mapping(source = "categoryId", target = "category.id")

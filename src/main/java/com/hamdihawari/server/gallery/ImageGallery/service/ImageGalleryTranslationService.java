@@ -56,14 +56,11 @@ public class ImageGalleryTranslationService {
         ImageGalleryTranslation translation = imageGalleryTranslationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Translation not found"));
 
-        // Update all fields including thumbnailAlt
+        // Update fields related to translations
         translation.setTitle(translationDTO.getTitle());
-        translation.setCameraMake(translationDTO.getCameraMake());
-        translation.setCameraModel(translationDTO.getCameraModel());
-        translation.setLensFocalLength(translationDTO.getLensFocalLength());
-        translation.setLensType(translationDTO.getLensType());
-        translation.setThumbnailAlt(translationDTO.getThumbnailAlt()); // Update the thumbnailAlt
-        // Update other fields...
+        translation.setLocation(translationDTO.getLocation());
+        translation.setOriginalAlt(translationDTO.getOriginalAlt());
+        translation.setThumbnailAlt(translationDTO.getThumbnailAlt());
 
         ImageGalleryTranslation updatedTranslation = imageGalleryTranslationRepository.save(translation);
         return imageGalleryTranslationMapper.toDTO(updatedTranslation);
@@ -75,6 +72,5 @@ public class ImageGalleryTranslationService {
         }
         imageGalleryTranslationRepository.deleteById(id);
     }
-
 
 }

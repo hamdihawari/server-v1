@@ -11,14 +11,12 @@ import java.util.List;
 @Repository
 public interface ImageGalleryRepository extends JpaRepository<ImageGallery, Long> {
 
-    // Query to fetch galleries by category name and language
     @Query("SELECT ig FROM ImageGallery ig " +
             "JOIN ig.category c " +
             "JOIN CategoryTranslation ct ON ct.category.id = c.id " +
             "WHERE ct.name = :categoryName AND ct.language.id = :languageId")
     List<ImageGallery> findByCategoryNameAndLanguage(@Param("categoryName") String categoryName, @Param("languageId") Long languageId);
 
-    // Query to fetch galleries by category name without filtering by language
     @Query("SELECT ig FROM ImageGallery ig " +
             "JOIN ig.category c " +
             "JOIN CategoryTranslation ct ON ct.category.id = c.id " +

@@ -14,7 +14,6 @@ public class ImageGalleryTranslationController {
 
     private final ImageGalleryTranslationService translationService;
 
-    // Only one constructor to inject the service
     public ImageGalleryTranslationController(ImageGalleryTranslationService translationService) {
         this.translationService = translationService;
     }
@@ -37,7 +36,6 @@ public class ImageGalleryTranslationController {
         return new ResponseEntity<>(translation, HttpStatus.OK);
     }
 
-    // Endpoint to get translation by both imageGalleryId and languageId
     @GetMapping("/image-gallery/{imageGalleryId}/language/{languageId}")
     public ResponseEntity<ImageGalleryTranslationDTO> getTranslationByImageGalleryAndLanguage(
             @PathVariable Long imageGalleryId,
@@ -45,6 +43,7 @@ public class ImageGalleryTranslationController {
         ImageGalleryTranslationDTO translation = translationService.getTranslationByImageGalleryAndLanguage(imageGalleryId, languageId);
         return new ResponseEntity<>(translation, HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<ImageGalleryTranslationDTO> createTranslation(@RequestBody ImageGalleryTranslationDTO translationDTO) {
         ImageGalleryTranslationDTO createdTranslation = translationService.createTranslation(translationDTO);
